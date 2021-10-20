@@ -2,8 +2,11 @@
 function scriptPropatiesReset(){
 	//スクリプトプロパティを取得
 	const scriptProperties = PropertiesService.getScriptProperties();
-	//日時の初期値をセット
-	scriptProperties.setProperty('date', 'Fri Apr 02 10:00:00 +0000 2021');
+	
+	const data = scriptProperties.getProperties();
+	for (var key in data) {
+		Logger.log('キー: %s, 値: %s', key, data[key]);
+	}
 }
 
 

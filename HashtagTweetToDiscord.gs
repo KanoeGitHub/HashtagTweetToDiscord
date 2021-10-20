@@ -35,10 +35,10 @@ function authCallback(request) {
 //↑↑ここまではTwitter関連
 
 //Discordに送るための関数
-function sendToDiscord(user, cont) {
+function sendToDiscord(user, cont, webhook) {
 	
 	//取得したWebhookURLを追加
-	const WEBHOOK_URL = "Webhook URL of Discord"; 
+	const WEBHOOK_URL = webhook; 
 	
 	//Discordに送信する変数
 	const payload = {
@@ -54,18 +54,14 @@ function sendToDiscord(user, cont) {
 }
 
 //ここがトリガー設定して回す関数
-function getMyHashTweets() {
+function getMyHashTweets(screenName, serchString, count, Webhook) {
 	const bearer_token = '任意のBearer_Token'
 	var service  = twitter.getService();
 	var bearer_auth_header = {
 		'Authorization': 'Bearer ' + bearer_token
 	};
 
-	//URLのq=以下に検索指定設定を記載する。
-	//"from%3AKanoeTweet" は "from@KanoeTweet"
-	//"%20" は "&"
-	//"%23shijimi" は "#shijimi"
-	var json = service.fetch('https://api.twitter.com/1.1/search/tweets.json?q=from%3AKanoeTweet%20%23shijimi&count=5' + { 'headers': bearer_auth_header });
+	var json = service.fetch('https://api.twitter.com/1.1/search/tweets.json?q=from%3A'+screenName+'%20'+serchString+ '&count='+count+ { 'headers': bearer_auth_header });
 
 	var array = JSON.parse(json);
 	array.statuses.reverse();
@@ -76,19 +72,34 @@ function getMyHashTweets() {
 	array.statuses.forEach(function(status) {    
 		Logger.log(status.user.screen_name +":"+ status.created_at);
 		var a = new Date(status.created_at);
-		var b = new Date(scriptProperties.getProperty('date'));
+		var b = new Date(scriptProperties.getProperty(screenName + 'Date'));
 
 		//日時の比較
 		if(a>b){ 
-			//Tweetの本文のみを転送する場合
-			//sendToDiscord(status.user.name, status.text); 
-
-			//Tweetのリンクを転送する場合
-			sendToDiscord(status.user.name, "https://twitter.com/" + status.user.screen_name + "/status/" + status.id_str); 
-
-			scriptProperties.setProperty('date', status.created_at); //最終日時更新
+			Logger.log(status.text);
+			
+			//Tweetの本文のみを表示させる場合
+			//sendToDiscord(status.user.name, status.text.replace("#shijimi","")); 
+			
+			//Tweetのリンクを表示させる場合
+			sendToDiscord(status.user.name, "https://twitter.com/" + status.user.screen_name + "/status/" + status.id_str, Webhook); 
+			
+			scriptProperties.setProperty(screenName + 'Date', status.created_at); //最終日時更新
 		}
 	});
 	
 	return array;
+}
+
+
+//以下に任意の関数を作り、それをトリガーとして使用します
+//絞りたいワードに ハッシュタグ を含める場合は、# の代わりに %23 をつけてください
+//例: #Apex の場合は %23Apex 
+
+//例(ApexLegends公式アカウント @playApex　の場合）
+function apexOfficial(){
+	const webhook = "WEBHOOK_URL";
+	
+	//getMyHashTweets("アカウント名", "絞りたいワード", 最大件数, webhook );
+	getMyHashTweets("PlayApex", "", 10, webhook );
 }

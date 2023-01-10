@@ -53,7 +53,7 @@ function sendToDiscord(user, cont, webhook) {
 	});
 }
 
-//ここがトリガー設定して回す関数
+//対象のツイートを取得してDiscordに投稿する関数
 function getMyHashTweets(screenName, serchString, count, Webhook) {
 	const bearer_token = '任意のBearer_Token'
 	var service  = twitter.getService();

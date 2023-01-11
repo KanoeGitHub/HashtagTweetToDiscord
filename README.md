@@ -30,6 +30,9 @@ Twitter Developper でAPIの利用申請を行なって設定してください�
 認証関連につきましては、こちらの記事を参考にしました。
 [https://qiita.com/akkey2475/items/ad190a507b4a7b7dc17c](https://qiita.com/akkey2475/items/ad190a507b4a7b7dc17c)
 
+## Q&A
+### RTを除く方法はありますか？
+Wikiに方法を記載しました。-> [RTを除外する方法 - Wiki](https://github.com/KanoeGitHub/HashtagTweetToDiscord/wiki/RT%E3%82%92%E9%99%A4%E5%A4%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95)
 
 
 
